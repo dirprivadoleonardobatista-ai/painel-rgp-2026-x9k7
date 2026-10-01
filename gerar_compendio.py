@@ -22,12 +22,13 @@ from copilot import CopilotClient
 from copilot.session import PermissionHandler
 from copilot.session_events import AssistantMessageData
 
-ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "data"
+# CORREÇÃO: Caminhos ajustados para a estrutura raiz do repositório
+ROOT = Path(__file__).resolve().parent
+DATA = ROOT
 OUT = ROOT / "saida"
 CACHE = OUT / "_cache"
 PARTIAIS = OUT / "_parciais"
-ESTADO = OUT / "_estado.json"
+ESTADO = ROOT / "estado_inicial.json"
 CUSTO = OUT / "_custo.json"
 
 PALAVRAS_POR_PAGINA = 400
