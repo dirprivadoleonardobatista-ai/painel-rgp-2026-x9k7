@@ -143,7 +143,6 @@ def contexto(pesquisa, limite=18000):
     return "\n\n".join(partes)[:limite] or "(Não foram obtidas fontes web suficientes; sinalize incertezas.)"
 
 def make_outline(obra, pesquisa, n):
-    # Distribuição determinística pelos 11 eixos, preservando soma n.
     quotas = [max(1, round(n * p)) for _, _, p in EIXOS]
     while sum(quotas) > n: quotas[quotas.index(max(quotas))] -= 1
     while sum(quotas) < n: quotas[quotas.index(max(quotas))] += 1
@@ -205,7 +204,6 @@ TAREFA: produza uma exposição substantiva e específica deste tópico. Não in
             save_json(parcial, dados)
             log(f"    {obra[:45]} | {i}/{total}")
 
-    # Em lotes para não disparar centenas de sessões de uma vez.
     for start in range(0, total, paralelismo * 2):
         await asyncio.gather(*(one(i, t) for i, t in list(enumerate(sumario, 1))[start:start + paralelismo * 2]))
     save_json(parcial, dados)
@@ -261,8 +259,7 @@ async def processar(args):
             parcial = PARTIAIS / f"{chave}.json"
             base = load_json(parcial, None)
             if base and base.get("sumario"): sumario = base["sumario"]
-            global PALAVRAS_POR_TOPICO
-            PALAVRAS_POR_TOPICO = args.palavras_por_topico
+            
             dados = await gerar_topicos(client, args.modelo, obra, pesquisa, sumario, parcial, args.paralelismo)
             escritos = dados.get("topicos", {})
             if len(escritos) < len(sumario):
