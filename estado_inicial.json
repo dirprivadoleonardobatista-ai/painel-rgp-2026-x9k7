@@ -1,0 +1,8 @@
+{
+  "observacao": "O pacote original informa 3 obras concluídas, mas os DOCX dessas obras não foram copiados para este repositório. O gerador só considera uma obra concluída quando o DOCX de saída também existe.",
+  "concluidas_no_projeto_original": [
+    "Produção destrutiva e Estado capitalista. Ensaio, 1996 (em português).",
+    "O Poder da ideologia, Boitempo, 2004. (em português).",
+    "Para além do capital. Boitempo, 2003 (em português)."
+  ]
+}
