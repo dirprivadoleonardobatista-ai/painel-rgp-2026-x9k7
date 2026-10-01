@@ -1,0 +1,29 @@
+name: Gerar compêndio com Claude
+
+on:
+  workflow_dispatch:
+    inputs:
+      modelo:
+        description: 'Modelo GitHub Copilot'
+        required: true
+        default: 'claude-opus-5.5'
+      limite_obras:
+        description: '0 = todas; ou quantidade desta rodada'
+        required: true
+        default: '1'
+      pular:
+        description: 'Quantidade de obras a ignorar no início da lista'
+        required: true
+        default: '0'
+      palavras_por_topico:
+        description: 'Palavras por tópico'
+        required: true
+        default: '750'
+      paralelismo:
+        description: 'Chamadas simultâneas ao Claude'
+        required: true
+        default: '6'
+
+permissions:
+  contents: read
+  copilot-requests: write
