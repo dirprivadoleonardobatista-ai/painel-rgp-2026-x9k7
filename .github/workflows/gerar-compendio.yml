@@ -51,13 +51,18 @@ jobs:
             compendio-progress-${{ github.ref_name }}
 
       - name: Instalar dependências
-        run: pip install -r requirements.txt
+        run: |
+          if [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt
+          else
+            pip install python-docx requests beautifulsoup4 duckduckgo-search
+          fi
 
       - name: Gerar compêndio
         env:
           COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
         run: |
-          python scripts/gerar_compendio.py \
+          python gerar_compendio.py \
             --modelo "${{ inputs.modelo }}" \
             --limite-obras "${{ inputs.limite_obras }}" \
             --pular "${{ inputs.pular }}" \
@@ -71,7 +76,9 @@ jobs:
           if [ -d "saida" ]; then
             cp -r saida pacote_compendio/saida
           fi
-          cp data/lista_obras.txt pacote_compendio/lista_obras.txt
+          if [ -f "data/lista_obras.txt" ]; then
+            cp data/lista_obras.txt pacote_compendio/lista_obras.txt
+          fi
           cd pacote_compendio
           zip -r ../compendio-resultados.zip .
 
