@@ -27,3 +27,59 @@ on:
 permissions:
   contents: read
   copilot-requests: write
+
+jobs:
+  gerar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1440
+
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Restaurar progresso
+        uses: actions/cache@v4
+        with:
+          path: saida
+          key: compendio-progress-${{ github.ref_name }}
+          restore-keys: |
+            compendio-progress-${{ github.ref_name }}
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Gerar compêndio
+        env:
+          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
+        run: |
+          python scripts/gerar_compendio.py \
+            --modelo "${{ inputs.modelo }}" \
+            --limite-obras "${{ inputs.limite_obras }}" \
+            --pular "${{ inputs.pular }}" \
+            --palavras-por-topico "${{ inputs.palavras_por_topico }}" \
+            --paralelismo "${{ inputs.paralelismo }}"
+
+      - name: Empacotar resultados
+        if: always()
+        run: |
+          mkdir -p pacote_compendio
+          if [ -d "saida" ]; then
+            cp -r saida pacote_compendio/saida
+          fi
+          cp data/lista_obras.txt pacote_compendio/lista_obras.txt
+          cd pacote_compendio
+          zip -r ../compendio-resultados.zip .
+
+      - name: Publicar resultados
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compendio-docx
+          path: compendio-resultados.zip
+          if-no-files-found: warn
+          retention-days: 30
